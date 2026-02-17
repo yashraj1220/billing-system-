@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Guide - Retail Billing System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        h2 {
+            color: #764ba2;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.75rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            color: #555;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        p, li {
+            color: #333;
+            margin-bottom: 0.75rem;
+        }
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #667eea;
+        }
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.25rem;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.25rem;
+        }
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        ul {
+            margin-left: 2rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+        }
+        .feature-card h4 {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏪 Retail Billing System</h1>
+        <span class="badge">Setup Guide v1.0</span>
+        
+        <div class="success">
+            <strong>✅ Congratulations!</strong> Your billing system is ready to use. Follow the steps below to get started.
+        </div>
+
+        <h2>📋 Quick Start Options</h2>
+        
+        <div class="step">
+            <h3><span class="step-number">1</span> Offline Mode (Recommended for Beginners)</h3>
+            <p><strong>No setup required!</strong> Just open <code>index.html</code> in your browser and start using immediately.</p>
+            <ul>
+                <li>Works without internet connection</li>
+                <li>Data stored in browser (IndexedDB)</li>
+                <li>Perfect for single-device usage</li>
+                <li>No server or database needed</li>
+            </ul>
+            <a href="index.html" class="btn">🚀 Launch Application</a>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">2</span> Online Mode with MySQL (For Multi-Device Access)</h3>
+            <p>Setup MySQL database for cloud sync and multi-device access.</p>
+            
+            <h4>Prerequisites:</h4>
+            <ul>
+                <li>Web server (Apache/Nginx)</li>
+                <li>PHP 7.0+ with MySQL extension</li>
+                <li>MySQL 5.7+ database</li>
+            </ul>
+
+            <h4>Setup Steps:</h4>
+            
+            <p><strong>Step A: Create Database</strong></p>
+            <div class="code-block">mysql -u root -p &lt; database.sql</div>
+            <p>Or import via phpMyAdmin:</p>
+            <ol>
+                <li>Login to phpMyAdmin</li>
+                <li>Create new database: <code>retail_billing</code></li>
+                <li>Import <code>database.sql</code> file</li>
+            </ol>
+
+            <p><strong>Step B: Configure API</strong></p>
+            <p>Edit <code>api.php</code> and update database credentials:</p>
+            <div class="code-block">define('DB_HOST', 'localhost');
+define('DB_USER', 'your_username');
+define('DB_PASS', 'your_password');
+define('DB_NAME', 'retail_billing');</div>
+
+            <p><strong>Step C: Upload Files</strong></p>
+            <p>Upload all files to your web server's public directory (htdocs/public_html)</p>
+
+            <p><strong>Step D: Test API</strong></p>
+            <p>Visit: <code>http://yourdomain.com/api.php?action=export</code></p>
+            <p>Should return JSON response with success status</p>
+
+            <p><strong>Step E: Enable Sync in Application</strong></p>
+            <p>Open <code>index.html</code> and add sync.js before closing body tag:</p>
+            <div class="code-block">&lt;script src="sync.js"&gt;&lt;/script&gt;</div>
+        </div>
+
+        <h2>🎯 Initial Configuration</h2>
+        
+        <div class="step">
+            <h3><span class="step-number">3</span> Configure Business Settings</h3>
+            <ol>
+                <li>Launch the application</li>
+                <li>Click on <strong>Settings</strong> (⚙️) in sidebar</li>
+                <li>Fill in your business information:
+                    <ul>
+                        <li>Business Name</li>
+                        <li>Address (for invoices)</li>
+                        <li>Phone & Email</li>
+                        <li>GST Number (if applicable)</li>
+                    </ul>
+                </li>
+                <li>Configure WhatsApp reminder settings</li>
+                <li>Click <strong>Save Settings</strong></li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">4</span> Add Your First Customer</h3>
+            <ol>
+                <li>Go to <strong>Customers</strong> page</li>
+                <li>Click <strong>+ Add Customer</strong></li>
+                <li>Enter customer details (Name and Phone are required)</li>
+                <li>Phone must include country code for WhatsApp (e.g., +919876543210)</li>
+                <li>Click <strong>Save Customer</strong></li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">5</span> Add Products</h3>
+            <ol>
+                <li>Go to <strong>Products</strong> page</li>
+                <li>Click <strong>+ Add Product</strong></li>
+                <li>Enter product details:
+                    <ul>
+                        <li>Product Name</li>
+                        <li>SKU/Code (optional)</li>
+                        <li>Price</li>
+                        <li>Stock Quantity</li>
+                        <li>Category</li>
+                        <li>Tax percentage</li>
+                    </ul>
+                </li>
+                <li>Click <strong>Save Product</strong></li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">6</span> Create Your First Invoice</h3>
+            <ol>
+                <li>Go to <strong>New Invoice</strong> page</li>
+                <li>Select customer from dropdown</li>
+                <li>Select products and enter quantities</li>
+                <li>Review totals (auto-calculated)</li>
+                <li>Set payment status</li>
+                <li>Click <strong>Save Invoice</strong></li>
+                <li>Click <strong>Print</strong> to generate PDF</li>
+            </ol>
+        </div>
+
+        <h2>📱 WhatsApp Integration Setup</h2>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> WhatsApp integration requires:
+            <ul>
+                <li>Customer phone numbers with country code (e.g., +919876543210)</li>
+                <li>WhatsApp installed on device</li>
+                <li>Pop-ups enabled in browser</li>
+            </ul>
+        </div>
+
+        <p><strong>Phone Number Format:</strong></p>
+        <ul>
+            <li>India: +91XXXXXXXXXX</li>
+            <li>USA: +1XXXXXXXXXX</li>
+            <li>UK: +44XXXXXXXXXX</li>
+            <li>UAE: +971XXXXXXXXX</li>
+        </ul>
+
+        <p><strong>Sending Reminders:</strong></p>
+        <ol>
+            <li>Dashboard shows pending payments</li>
+            <li>Click <strong>Send Reminder</strong> button</li>
+            <li>WhatsApp opens with pre-filled message</li>
+            <li>Review and send</li>
+        </ol>
+
+        <h2>🔄 Backup & Restore</h2>
+        
+        <div class="step">
+            <h3>Manual Backup (Offline Mode)</h3>
+            <ol>
+                <li>Open browser console (F12)</li>
+                <li>Run: <code>exportAllData().then(data => console.log(JSON.stringify(data)))</code></li>
+                <li>Copy the JSON output</li>
+                <li>Save to text file</li>
+            </ol>
+            
+            <h3>Restore from Backup</h3>
+            <ol>
+                <li>Open browser console (F12)</li>
+                <li>Paste your backup JSON into variable</li>
+                <li>Run: <code>importAllData(yourBackupData)</code></li>
+            </ol>
+
+            <h3>Automatic Backup (MySQL Mode)</h3>
+            <p>Data is automatically synced to MySQL database. Schedule regular MySQL backups using:</p>
+            <div class="code-block">mysqldump -u username -p retail_billing > backup_$(date +%Y%m%d).sql</div>
+        </div>
+
+        <h2>🎨 Features Overview</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>📄 Invoicing</h4>
+                <p>Professional invoice creation with print & PDF export</p>
+            </div>
+            <div class="feature-card">
+                <h4>👥 Customers</h4>
+                <p>Track customer history & outstanding payments</p>
+            </div>
+            <div class="feature-card">
+                <h4>📦 Inventory</h4>
+                <p>Manage products with stock levels & pricing</p>
+            </div>
+            <div class="feature-card">
+                <h4>💰 Expenses</h4>
+                <p>Record & categorize business expenses</p>
+            </div>
+            <div class="feature-card">
+                <h4>📊 Reports</h4>
+                <p>Sales reports & profit analysis</p>
+            </div>
+            <div class="feature-card">
+                <h4>📱 WhatsApp</h4>
+                <p>Send payment reminders & invoices</p>
+            </div>
+        </div>
+
+        <h2>🛠️ Troubleshooting</h2>
+        
+        <div class="step">
+            <h3>Common Issues</h3>
+            
+            <p><strong>Issue: Data not saving</strong></p>
+            <ul>
+                <li>Check if IndexedDB is enabled in browser</li>
+                <li>Clear browser cache and retry</li>
+                <li>Check browser console for errors (F12)</li>
+            </ul>
+
+            <p><strong>Issue: WhatsApp not opening</strong></p>
+            <ul>
+                <li>Verify phone number format (+countrycode)</li>
+                <li>Enable pop-ups for the site</li>
+                <li>Ensure WhatsApp is installed</li>
+            </ul>
+
+            <p><strong>Issue: MySQL sync not working</strong></p>
+            <ul>
+                <li>Check database credentials in api.php</li>
+                <li>Verify MySQL service is running</li>
+                <li>Check PHP error logs</li>
+                <li>Ensure CORS headers are set correctly</li>
+            </ul>
+
+            <p><strong>Issue: Print not working</strong></p>
+            <ul>
+                <li>Allow pop-ups for the site</li>
+                <li>Try different browser (Chrome recommended)</li>
+                <li>Check if JavaScript is enabled</li>
+            </ul>
+        </div>
+
+        <h2>📚 Additional Resources</h2>
+        
+        <ul>
+            <li>📖 Read <code>README.md</code> for detailed documentation</li>
+            <li>💻 All source code is fully editable and customizable</li>
+            <li>🎨 Edit <code>styles.css</code> to change colors and theme</li>
+            <li>🔧 Modify <code>app.js</code> for custom functionality</li>
+        </ul>
+
+        <div class="success">
+            <strong>✨ You're All Set!</strong> Your billing system is ready to use. Start by clicking the launch button above!
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #e0e0e0;">
+            <a href="index.html" class="btn" style="font-size: 1.25rem; padding: 1rem 3rem;">
+                🚀 Launch Retail Billing System
+            </a>
+        </div>
+    </div>
+</body>
+</html>
