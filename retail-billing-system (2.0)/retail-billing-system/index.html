@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retail Billing System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>🏪 Retail Billing</h2>
+        </div>
+        <nav>
+            <a href="#" class="nav-link active" data-page="dashboard">
+                <span class="icon">📊</span> Dashboard
+            </a>
+            <a href="#" class="nav-link" data-page="new-invoice">
+                <span class="icon">➕</span> New Invoice
+            </a>
+            <a href="#" class="nav-link" data-page="invoices">
+                <span class="icon">📄</span> Invoices
+            </a>
+            <a href="#" class="nav-link" data-page="customers">
+                <span class="icon">👥</span> Customers
+            </a>
+            <a href="#" class="nav-link" data-page="products">
+                <span class="icon">📦</span> Products
+            </a>
+            <a href="#" class="nav-link" data-page="expenses">
+                <span class="icon">💰</span> Expenses
+            </a>
+            <a href="#" class="nav-link" data-page="reports">
+                <span class="icon">📈</span> Reports
+            </a>
+            <a href="#" class="nav-link" data-page="settings">
+                <span class="icon">⚙️</span> Settings
+            </a>
+        </nav>
+        <div class="sync-status">
+            <span id="syncStatus" class="status-offline">● Offline Mode</span>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="header">
+            <h1 id="pageTitle">Dashboard</h1>
+            <div class="header-actions">
+                <button class="btn-icon" onclick="syncData()" title="Sync Data">🔄</button>
+                <button class="btn-icon" onclick="showNotifications()" title="Notifications">
+                    🔔 <span class="badge" id="notificationBadge">0</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💵</div>
+                    <div class="stat-info">
+                        <h3>Today's Sales</h3>
+                        <p class="stat-value" id="todaySales">₹0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-info">
+                        <h3>This Month</h3>
+                        <p class="stat-value" id="monthSales">₹0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-info">
+                        <h3>Pending Payments</h3>
+                        <p class="stat-value" id="pendingPayments">₹0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <h3>Total Customers</h3>
+                        <p class="stat-value" id="totalCustomers">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-row">
+                <div class="card half-width">
+                    <h3>Recent Invoices</h3>
+                    <div id="recentInvoices" class="list-container"></div>
+                </div>
+                <div class="card half-width">
+                    <h3>Payment Reminders</h3>
+                    <div id="paymentReminders" class="list-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Invoice Page -->
+        <div id="new-invoice" class="page">
+            <div class="card">
+                <form id="invoiceForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Customer *</label>
+                            <select id="invoiceCustomer" required>
+                                <option value="">Select Customer</option>
+                            </select>
+                            <button type="button" class="btn-small" onclick="showAddCustomerModal()">+ Add New</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Invoice Date *</label>
+                            <input type="date" id="invoiceDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date" id="dueDate">
+                        </div>
+                    </div>
+
+                    <h4>Items</h4>
+                    <table class="invoice-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%">Product</th>
+                                <th style="width: 15%">Quantity</th>
+                                <th style="width: 15%">Price</th>
+                                <th style="width: 15%">Tax %</th>
+                                <th style="width: 15%">Total</th>
+                                <th style="width: 5%"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceItems">
+                            <tr class="item-row">
+                                <td>
+                                    <select class="item-product" onchange="selectProduct(this)" required>
+                                        <option value="">Select Product</option>
+                                    </select>
+                                </td>
+                                <td><input type="number" class="item-qty" value="1" min="1" oninput="calculateItemTotal(this)"></td>
+                                <td><input type="number" class="item-price" step="0.01" min="0" oninput="calculateItemTotal(this)"></td>
+                                <td><input type="number" class="item-tax" value="0" min="0" max="100" step="0.01" oninput="calculateItemTotal(this)"></td>
+                                <td><input type="number" class="item-total" readonly></td>
+                                <td><button type="button" class="btn-delete" onclick="removeItem(this)">🗑️</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn-secondary" onclick="addInvoiceItem()">+ Add Item</button>
+
+                    <div class="invoice-summary">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">₹0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax:</span>
+                            <span id="totalTax">₹0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span id="grandTotal">₹0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Payment Status</label>
+                            <select id="paymentStatus">
+                                <option value="paid">Paid</option>
+                                <option value="pending">Pending</option>
+                                <option value="partial">Partial</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Amount Paid</label>
+                            <input type="number" id="amountPaid" step="0.01" min="0" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="invoiceNotes" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Invoice</button>
+                        <button type="button" class="btn-secondary" onclick="printInvoice()">Print</button>
+                        <button type="button" class="btn-secondary" onclick="resetInvoiceForm()">Clear</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Invoices List Page -->
+        <div id="invoices" class="page">
+            <div class="card">
+                <div class="table-actions">
+                    <input type="text" id="searchInvoices" placeholder="Search invoices..." class="search-box">
+                    <select id="filterStatus" onchange="loadInvoices()">
+                        <option value="">All Status</option>
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                        <option value="partial">Partial</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Paid</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoicesTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customers Page -->
+        <div id="customers" class="page">
+            <div class="card">
+                <button class="btn-primary" onclick="showAddCustomerModal()">+ Add Customer</button>
+                <input type="text" id="searchCustomers" placeholder="Search customers..." class="search-box">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Total Purchase</th>
+                                <th>Pending</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Page -->
+        <div id="products" class="page">
+            <div class="card">
+                <button class="btn-primary" onclick="showAddProductModal()">+ Add Product</button>
+                <input type="text" id="searchProducts" placeholder="Search products..." class="search-box">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>SKU</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Category</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expenses Page -->
+        <div id="expenses" class="page">
+            <div class="card">
+                <button class="btn-primary" onclick="showAddExpenseModal()">+ Add Expense</button>
+                <div class="table-actions">
+                    <input type="text" id="searchExpenses" placeholder="Search expenses..." class="search-box">
+                    <input type="month" id="expenseMonth" onchange="loadExpenses()">
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesTable"></tbody>
+                    </table>
+                </div>
+                <div class="expense-summary">
+                    <h3>Total Expenses: <span id="totalExpenses">₹0</span></h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Page -->
+        <div id="reports" class="page">
+            <div class="card">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>From Date</label>
+                        <input type="date" id="reportFromDate">
+                    </div>
+                    <div class="form-group">
+                        <label>To Date</label>
+                        <input type="date" id="reportToDate">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn-primary" onclick="generateReport()">Generate Report</button>
+                    </div>
+                </div>
+                <div id="reportResults" class="report-container"></div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settings" class="page">
+            <div class="card">
+                <div class="alert alert-info">
+                    <span style="font-size: 1.5rem;">ℹ️</span>
+                    <span>Need sample data to get started? <button class="btn-small" onclick="addSampleData()" style="margin-left: 1rem;">Add Sample Data</button></span>
+                </div>
+                
+                <h3>Business Information</h3>
+                <div class="form-group">
+                    <label>Business Name</label>
+                    <input type="text" id="businessName">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea id="businessAddress" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="businessPhone">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="businessEmail">
+                </div>
+                <div class="form-group">
+                    <label>GST Number</label>
+                    <input type="text" id="gstNumber">
+                </div>
+
+                <h3>WhatsApp Reminder Settings</h3>
+                <div class="form-group">
+                    <label>Days Before Due Date to Send Reminder</label>
+                    <input type="number" id="reminderDays" value="3" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Default Reminder Message</label>
+                    <textarea id="reminderTemplate" rows="4">Hello {customer_name}, 
+
+This is a reminder that your payment of ₹{amount} for Invoice #{invoice_number} is due on {due_date}.
+
+Please make the payment at your earliest convenience.
+
+Thank you!
+{business_name}</textarea>
+                </div>
+
+                <button class="btn-primary" onclick="saveSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div id="customerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('customerModal')">&times;</span>
+            <h2>Add Customer</h2>
+            <form id="customerForm">
+                <div class="form-group">
+                    <label>Name *</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone *</label>
+                    <input type="tel" id="customerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="customerEmail">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea id="customerAddress" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Customer</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('customerModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('productModal')">&times;</span>
+            <h2>Add Product</h2>
+            <form id="productForm">
+                <div class="form-group">
+                    <label>Product Name *</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label>SKU/Code</label>
+                    <input type="text" id="productSKU">
+                </div>
+                <div class="form-group">
+                    <label>Price *</label>
+                    <input type="number" id="productPrice" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock Quantity</label>
+                    <input type="number" id="productStock" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <input type="text" id="productCategory">
+                </div>
+                <div class="form-group">
+                    <label>Tax %</label>
+                    <input type="number" id="productTax" value="0" step="0.01">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Product</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('productModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="expenseModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('expenseModal')">&times;</span>
+            <h2>Add Expense</h2>
+            <form id="expenseForm">
+                <div class="form-group">
+                    <label>Date *</label>
+                    <input type="date" id="expenseDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Category *</label>
+                    <input type="text" id="expenseCategory" list="expenseCategories" required>
+                    <datalist id="expenseCategories">
+                        <option value="Rent">
+                        <option value="Utilities">
+                        <option value="Salaries">
+                        <option value="Inventory">
+                        <option value="Marketing">
+                        <option value="Transportation">
+                        <option value="Maintenance">
+                        <option value="Other">
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="expenseDescription">
+                </div>
+                <div class="form-group">
+                    <label>Amount *</label>
+                    <input type="number" id="expenseAmount" step="0.01" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Expense</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('expenseModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="database.js"></script>
+    <script src="app.js"></script>
+    <script src="sample-data.js"></script>
+</body>
+</html>
